@@ -23,7 +23,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from __future__ import print_function
+# Don't do anything silly ... this should be compatible with python 2.4!
 try:
     import json
 except ImportError:
@@ -33,7 +33,7 @@ import logging
 from optparse import OptionParser
 
 __author__ = "Matěj Cepl"
-__version__ = "1.3.0"
+__version__ = "1.3.1"
 
 logging.basicConfig(format='%(levelname)s:%(funcName)s:%(message)s',
     level=logging.INFO)
@@ -362,10 +362,10 @@ def main(sys_args):
     if options.HTMLoutput:
         # we want to hardcode UTF-8 here, because that's what's
         # in <meta> element of the generated HTML
-        print(unicode(HTMLFormatter(diff_res)).encode("utf-8"), file=outf)
+        print >>outf, unicode(HTMLFormatter(diff_res)).encode("utf-8")
     else:
         outs = json.dumps(diff_res, indent=4, ensure_ascii=False)
-        print(outs.encode("utf-8"), file=outf)
+        print >>outf, outs.encode("utf-8")
 
     if len(diff_res) > 0:
         return 1
