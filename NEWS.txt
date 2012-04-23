@@ -1,3 +1,6 @@
+1.3.0 2012-04-24
+ * Added -o parameter for output to the specified file.
+
 1.2.9 2012-02-13
  * Give up on non-UTF-8 encoding for output.
 

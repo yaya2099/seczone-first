@@ -2,8 +2,10 @@
 """
 PyUnit unit tests
 """
+from __future__ import print_function
 import unittest
 import sys
+import tempfile
 import locale
 try:
     import json
@@ -214,6 +216,27 @@ class TestMainArgsMgmt(unittest.TestCase):
         self.assertEqual(res, 1, "comparing different files" +
                          "\n\nexpected = %d\n\nobserved = %d" %
                          (1, res))
+
+    def test_args_run_output(self):
+        save_stdout = tempfile.NamedTemporaryFile(prefix="json_diff_")
+        cur_loc = locale.getlocale()
+        locale.setlocale(locale.LC_ALL, "cs_CZ.utf8")
+
+        res = json_diff.main(["./test_json_diff.py",
+            "-o", save_stdout.name,
+            "test/old.json", "test/new.json"])
+
+        expected_file = open("test/diff.json")
+        expected = expected_file.read()
+
+        save_stdout.seek(0)
+        observed = save_stdout.read()
+        save_stdout.close()
+
+        locale.setlocale(locale.LC_ALL, cur_loc)
+        self.assertEqual(expected, observed, "non-stdout output file" +
+            "\n\nexpected = %s\n\nobserved = %s" %
+            (expected, observed))
 
 add_tests_from_class = unittest.TestLoader().loadTestsFromTestCase
 

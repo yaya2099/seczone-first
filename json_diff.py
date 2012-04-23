@@ -23,6 +23,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+from __future__ import print_function
 try:
     import json
 except ImportError:
@@ -32,7 +33,7 @@ import logging
 from optparse import OptionParser
 
 __author__ = "Matěj Cepl"
-__version__ = "1.2.9"
+__version__ = "1.3.0"
 
 logging.basicConfig(format='%(levelname)s:%(funcName)s:%(message)s',
     level=logging.INFO)
@@ -337,6 +338,9 @@ def main(sys_args):
     parser.add_option("-i", "--include",
       action="append", dest="include", metavar="ATTR", default=[],
       help="attributes which should be exclusively used when comparing")
+    parser.add_option("-o", "--output",
+        action="append", dest="output", metavar="FILE", default=[],
+        help="name of the output file (default is stdout)")
     parser.add_option("-a", "--ignore-append",
       action="store_true", dest="ignore_append", metavar="BOOL", default=False,
       help="ignore appended keys")
@@ -344,6 +348,11 @@ def main(sys_args):
       action="store_true", dest="HTMLoutput", metavar="BOOL", default=False,
       help="program should output to HTML report")
     (options, args) = parser.parse_args(sys_args[1:])
+
+    if options.output:
+        outf = open(options.output[0], "w")
+    else:
+        outf = sys.stdout
 
     if len(args) != 2:
         parser.error("Script requires two positional arguments, " + \
@@ -353,10 +362,10 @@ def main(sys_args):
     if options.HTMLoutput:
         # we want to hardcode UTF-8 here, because that's what's
         # in <meta> element of the generated HTML
-        print(unicode(HTMLFormatter(diff_res)).encode("utf-8"))
+        print(unicode(HTMLFormatter(diff_res)).encode("utf-8"), file=outf)
     else:
         outs = json.dumps(diff_res, indent=4, ensure_ascii=False)
-        print(outs.encode("utf-8"))
+        print(outs.encode("utf-8"), file=outf)
 
     if len(diff_res) > 0:
         return 1
