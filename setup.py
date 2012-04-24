@@ -24,8 +24,10 @@ class RunTests(Command):
 
 
 def read(fname):
-    with open(os.path.join(os.path.dirname(__file__), fname)) as f:
-        return "\n" + f.read().replace("\r\n", "\n")
+    f = open(os.path.join(os.path.dirname(__file__), fname))
+    out = "\n" + f.read().replace("\r\n", "\n")
+    f.close()
+    return out
 
 
 def get_long_description():

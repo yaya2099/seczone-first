@@ -1,7 +1,14 @@
-1.3.1 2012-04-24
+1.3.3 2012-04-24
+ * Grrr, python 2.4 doesn't have context managers
+
+1.3.2 2012-04-24
+ * Include mising test/__init__.py to the distribution to allow
+   tests for packgaging.
+
+1.3.1 2012-04-23
  * Back to the past: previous version was not compatible with Python 2.4.
 
-1.3.0 2012-04-24
+1.3.0 2012-04-23
  * Added -o parameter for output to the specified file.
 
 1.2.9 2012-02-13
