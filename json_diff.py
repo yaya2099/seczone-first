@@ -36,7 +36,7 @@ __author__ = "Matěj Cepl"
 __version__ = "1.3.3"
 
 logging.basicConfig(format='%(levelname)s:%(funcName)s:%(message)s',
-    level=logging.INFO)
+                    level=logging.INFO)
 
 STYLE_MAP = {
     u"_append": u"append_class",
@@ -91,7 +91,7 @@ class HTMLFormatter(object):
         """A shell function to start recursive self._format_dict.
         """
         out_str = out_str_template % (title, title,
-            self._format_dict(in_dict))
+                                      self._format_dict(in_dict))
         out_str += u"""</table>
   </body>
 </html>"""
@@ -103,7 +103,7 @@ class HTMLFormatter(object):
 
         if is_scalar(item):
             out_str = (u"<tr>\n  %s<td class='%s'>%s = %s</td>\n  </tr>\n" %
-                (level_str, STYLE_MAP[typch], index, unicode(item)))
+                       (level_str, STYLE_MAP[typch], index, unicode(item)))
         elif isinstance(item, (list, tuple)):
             out_str = self._format_array(item, typch, level + 1)
         else:
@@ -115,7 +115,7 @@ class HTMLFormatter(object):
         out_str = []
         for index in range(len(diff_array)):
             out_str.append(self._format_item(diff_array[index], index, typch,
-                level))
+                           level))
         return ("".join(out_str)).strip()
 
     def _format_dict(self, diff_dict, typch="unknown_change", level=0):
@@ -124,12 +124,12 @@ class HTMLFormatter(object):
         # For all STYLE_MAP keys which are present in diff_dict
         for typechange in set(diff_dict.keys()) & INTERNAL_KEYS:
             out_str.append(self._format_dict(diff_dict[typechange],
-                 typechange, level))
+                           typechange, level))
 
         # For all other non-internal keys
         for variable in set(diff_dict.keys()) - INTERNAL_KEYS:
             out_str.append(self._format_item(diff_dict[variable],
-                 variable, typch, level))
+                           variable, typch, level))
 
         return ("".join(out_str)).strip()
 
@@ -154,13 +154,13 @@ class Comparator(object):
                 self.obj1 = json.load(fn1)
             except (TypeError, OverflowError, ValueError), exc:
                 raise BadJSONError("Cannot decode object from JSON.\n%s" %
-                    unicode(exc))
+                                   unicode(exc))
         if fn2:
             try:
                 self.obj2 = json.load(fn2)
             except (TypeError, OverflowError, ValueError), exc:
                 raise BadJSONError("Cannot decode object from JSON\n%s" %
-                    unicode(exc))
+                                   unicode(exc))
 
         self.excluded_attributes = []
         self.included_attributes = []
@@ -183,8 +183,8 @@ class Comparator(object):
                     for key in value[change_key]:
                         if ((self.included_attributes and
                              (key in self.included_attributes)) or
-                             (key not in self.excluded_attributes)):
-                            value_out = False
+                           (key not in self.excluded_attributes)):
+                                value_out = False
         return key_out and value_out
 
     def _filter_results(self, result):
@@ -201,9 +201,10 @@ class Comparator(object):
                 if self.ignore_appended and (change_type == "_append"):
                     continue
                 logging.debug("result[change_type] = %s, key = %s",
-                    unicode(result[change_type]), key)
+                              unicode(result[change_type]), key)
                 logging.debug("self._is_incex_key = %s",
-                    self._is_incex_key(key, result[change_type][key]))
+                              self._is_incex_key(key,
+                                                 result[change_type][key]))
                 if not self._is_incex_key(key, result[change_type][key]):
                     temp_dict[key] = result[change_type][key]
             if len(temp_dict) > 0:
@@ -333,20 +334,26 @@ def main(sys_args):
     usage = "usage: %prog [options] old.json new.json"
     parser = OptionParser(usage=usage)
     parser.add_option("-x", "--exclude",
-      action="append", dest="exclude", metavar="ATTR", default=[],
-      help="attributes which should be ignored when comparing")
+                      action="append", dest="exclude", metavar="ATTR",
+                      default=[],
+                      help="attributes which should be ignored when comparing")
     parser.add_option("-i", "--include",
-      action="append", dest="include", metavar="ATTR", default=[],
-      help="attributes which should be exclusively used when comparing")
+                      action="append", dest="include", metavar="ATTR",
+                      default=[],
+                      help="attributes which should be exclusively " +
+                      "used when comparing")
     parser.add_option("-o", "--output",
-        action="append", dest="output", metavar="FILE", default=[],
-        help="name of the output file (default is stdout)")
+                      action="append", dest="output", metavar="FILE",
+                      default=[],
+                      help="name of the output file (default is stdout)")
     parser.add_option("-a", "--ignore-append",
-      action="store_true", dest="ignore_append", metavar="BOOL", default=False,
-      help="ignore appended keys")
+                      action="store_true", dest="ignore_append",
+                      metavar="BOOL", default=False,
+                      help="ignore appended keys")
     parser.add_option("-H", "--HTML",
-      action="store_true", dest="HTMLoutput", metavar="BOOL", default=False,
-      help="program should output to HTML report")
+                      action="store_true", dest="HTMLoutput",
+                      metavar="BOOL", default=False,
+                      help="program should output to HTML report")
     (options, args) = parser.parse_args(sys_args[1:])
 
     if options.output:
@@ -355,8 +362,8 @@ def main(sys_args):
         outf = sys.stdout
 
     if len(args) != 2:
-        parser.error("Script requires two positional arguments, " + \
-            "names for old and new JSON file.")
+        parser.error("Script requires two positional arguments, " +
+                     "names for old and new JSON file.")
     diff = Comparator(open(args[0]), open(args[1]), options)
     diff_res = diff.compare_dicts()
     if options.HTMLoutput:

@@ -1,0 +1,5 @@
+When running
+
+json_diff test/DMS*
+
+json_diff fails with recursive error.
