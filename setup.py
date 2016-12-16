@@ -1,26 +1,7 @@
 # coding: utf-8
-from distutils.core import setup, Command
+from setuptools import setup
 import os.path
 import json_diff
-
-
-class RunTests(Command):
-    """New setup.py command to run all tests for the package.
-    """
-    description = "run all tests for the package"
-
-    user_options = []
-
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        import unittest
-        import test.test_json_diff
-        unittest.TextTestRunner(verbosity=2).run(test.test_json_diff.suite)
 
 
 def read(fname):
@@ -45,7 +26,7 @@ setup(
     py_modules=['json_diff'],
     long_description=get_long_description(),
     keywords=['json', 'diff'],
-    cmdclass={'test': RunTests},
+    test_suite='test.test_json_diff',
     classifiers=[
         "Programming Language :: Python",
         "Development Status :: 4 - Beta",
@@ -55,5 +36,5 @@ setup(
         "Operating System :: OS Independent",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: Text Processing :: General",
-        ]
+    ]
 )
