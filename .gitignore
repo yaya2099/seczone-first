@@ -3,4 +3,4 @@
 dist/
 MANIFEST
 build/
-.be/id-cache
+json_diff.egg-info/

@@ -22,7 +22,7 @@ setup(
     description='Generates diff between two JSON files',
     author='Matěj Cepl',
     author_email='mcepl@redhat.com',
-    url='https://fedorahosted.org/json_diff/',
+    url='https://gitlab.com/mcepl/json_diff',
     py_modules=['json_diff'],
     long_description=get_long_description(),
     keywords=['json', 'diff'],
