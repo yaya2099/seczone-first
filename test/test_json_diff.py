@@ -143,6 +143,7 @@ class TestHappyPath(OurTestCase):
                                OptionsClass(ign=True))
 
     # bug /6cf
+    @unittest.skip('Not finished yet.')
     def test_large_recursive_file(self):
         self._run_test(open("test/DMS_1121_1.json.1.out"),
                        open("test/DMS_1121_1.json.2.out"),
