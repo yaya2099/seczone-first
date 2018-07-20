@@ -16,12 +16,13 @@ def get_long_description():
         + "\nChangelog:\n" + "=" * 10 + "\n" \
         + read("NEWS.txt")
 
+
 setup(
     name='json_diff',
     version='%s' % json_diff.__version__,
     description='Generates diff between two JSON files',
     author='Matěj Cepl',
-    author_email='mcepl@redhat.com',
+    author_email='mcepl@cepl.eu',
     url='https://gitlab.com/mcepl/json_diff',
     py_modules=['json_diff'],
     long_description=get_long_description(),

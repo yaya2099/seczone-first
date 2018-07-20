@@ -33,7 +33,7 @@ import logging
 from optparse import OptionParser
 
 __author__ = "Matěj Cepl"
-__version__ = "1.3.6"
+__version__ = "1.3.7"
 
 logging.basicConfig(format='%(levelname)s:%(funcName)s:%(message)s',
                     level=logging.INFO)
@@ -378,6 +378,7 @@ def main(sys_args):
         return 1
 
     return 0
+
 
 if __name__ == "__main__":
     main_res = main(sys.argv)
