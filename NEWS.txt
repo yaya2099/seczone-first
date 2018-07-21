@@ -1,3 +1,9 @@
+1.4.3 2019-08-06
+ * Fix tests to work.
+
+1.4.2 2019-08-06
+ * Allow running main() without formal arguments.
+
 1.4.1 2018-07-21
  * Fix tests
 

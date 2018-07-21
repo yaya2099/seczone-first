@@ -33,7 +33,7 @@ import logging
 from optparse import OptionParser
 
 __author__ = "Matěj Cepl"
-__version__ = "1.4.2"
+__version__ = "1.4.3"
 
 logging.basicConfig(format='%(levelname)s:%(funcName)s:%(message)s',
                     level=logging.INFO)
@@ -329,9 +329,9 @@ class Comparator(object):
         return self._filter_results(result)
 
 
-def main(sys_args=None):
+def main(argv=None):
     """Main function, to process command line arguments etc."""
-    sys_args = args if args is not None else sys.argv[:]
+    sys_args = argv if argv is not None else sys.argv[:]
     usage = "usage: %prog [options] old.json new.json"
     parser = OptionParser(usage=usage)
     parser.add_option("-x", "--exclude",
