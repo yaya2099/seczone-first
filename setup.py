@@ -28,6 +28,11 @@ setup(
     long_description=get_long_description(),
     keywords=['json', 'diff'],
     test_suite='test.test_json_diff',
+    entry_points={
+            'console_scripts': [
+                'json_diff = json_diff:main',
+            ],
+    },
     classifiers=[
         "Programming Language :: Python",
         "Development Status :: 4 - Beta",
