@@ -33,7 +33,7 @@ import logging
 from optparse import OptionParser
 
 __author__ = "Matěj Cepl"
-__version__ = "1.4.1"
+__version__ = "1.4.2"
 
 logging.basicConfig(format='%(levelname)s:%(funcName)s:%(message)s',
                     level=logging.INFO)
@@ -329,7 +329,7 @@ class Comparator(object):
         return self._filter_results(result)
 
 
-def main(args):
+def main(sys_args=None):
     """Main function, to process command line arguments etc."""
     sys_args = args if args is not None else sys.argv[:]
     usage = "usage: %prog [options] old.json new.json"
