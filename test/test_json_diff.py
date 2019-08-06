@@ -2,6 +2,7 @@
 """
 PyUnit unit tests
 """
+import logging
 import unittest
 import sys
 import tempfile
@@ -11,15 +12,16 @@ try:
 except ImportError:
     import simplejson as json
 import json_diff
-from StringIO import StringIO
+from io import StringIO
 import codecs
 
-from test_strings import ARRAY_DIFF, ARRAY_NEW, ARRAY_OLD, \
+from .test_strings import ARRAY_DIFF, ARRAY_NEW, ARRAY_OLD, \
     NESTED_DIFF, NESTED_DIFF_EXCL, NESTED_DIFF_INCL, NESTED_NEW, NESTED_OLD, \
     NO_JSON_NEW, NO_JSON_OLD, SIMPLE_ARRAY_DIFF, SIMPLE_ARRAY_NEW, \
     NESTED_DIFF_IGNORING, \
     SIMPLE_ARRAY_OLD, SIMPLE_DIFF, SIMPLE_DIFF_HTML, SIMPLE_NEW, SIMPLE_OLD
 
+log = logging.getLogger('test_json_diff')
 
 class OptionsClass(object):
     def __init__(self, inc=None, exc=None, ign=None):
@@ -29,7 +31,7 @@ class OptionsClass(object):
 
 
 class OurTestCase(unittest.TestCase):
-    def _run_test(self, oldf, newf, difff, msg="", opts=None):
+    def _run_test(self, oldf, newf, difff, msg=u"", opts=None):
         diffator = json_diff.Comparator(oldf, newf, opts)
         diff = diffator.compare_dicts()
         expected = json.load(difff)
@@ -41,11 +43,12 @@ class OurTestCase(unittest.TestCase):
                           json.dumps(diff, sort_keys=True, indent=4,
                                      ensure_ascii=False)))
 
-    def _run_test_strings(self, olds, news, diffs, msg="", opts=None):
+    def _run_test_strings(self, olds, news, diffs, msg=u"", opts=None):
+        log.debug('olds = %s (%s), news = %s (%s), diffs = %s (%s), msg = %s (%s), opts = %s (%s)', olds, type(olds), news, type(news), diffs, type(diffs), msg, type(msg), opts, type(opts))
         self._run_test(StringIO(olds), StringIO(news), StringIO(diffs),
                        msg, opts)
 
-    def _run_test_formatted(self, oldf, newf, difff, msg="", opts=None):
+    def _run_test_formatted(self, oldf, newf, difff, msg=u"", opts=None):
         diffator = json_diff.Comparator(oldf, newf, opts)
         diff = ("\n".join([line.strip()
                 for line in unicode(
@@ -67,28 +70,28 @@ class TestBasicJSON(OurTestCase):
                          ({}, diff))
 
     def test_null(self):
-        self._run_test_strings('{"a": null}', '{"a": null}',
-                               '{}', "Nulls")
+        self._run_test_strings(u'{"a": null}', u'{"a": null}',
+                               u'{}', "Nulls")
 
     def test_null_to_string(self):
-        self._run_test_strings('{"a": null}', '{"a": "something"}',
-                               '{"_update": {"a": "something"}}',
+        self._run_test_strings(u'{"a": null}', u'{"a": "something"}',
+                               u'{"_update": {"a": "something"}}',
                                "Null changed to string")
 
     def test_boolean(self):
-        self._run_test_strings('{"a": true}', '{"a": false}',
-                               '{"_update": {"a": false}}', "Booleans")
+        self._run_test_strings(u'{"a": true}', u'{"a": false}',
+                               u'{"_update": {"a": false}}', "Booleans")
 
     def test_integer(self):
-        self._run_test_strings(u'{"a": 1}', '{"a": 2}',
+        self._run_test_strings(u'{"a": 1}', u'{"a": 2}',
                                u'{"_update": {"a": 2}}', "Integers")
 
     def test_float(self):
-        self._run_test_strings(u'{"a": 1.0}', '{"a": 1.1}',
+        self._run_test_strings(u'{"a": 1.0}', u'{"a": 1.1}',
                                u'{"_update": {"a": 1.1}}', "Floats")
 
     def test_int_to_float(self):
-        self._run_test_strings(u'{"a": 1}', '{"a": 1.0}',
+        self._run_test_strings(u'{"a": 1}', u'{"a": 1.0}',
                                u'{"_update": {"a": 1.0}}',
                                "Integer changed to float")
 
@@ -159,13 +162,13 @@ class TestBadPath(OurTestCase):
 
     def test_bad_JSON_no_hex(self):
         self.assertRaises(json_diff.BadJSONError, self._run_test_strings,
-                          u'{"a": 0x1}', '{"a": 2}', u'{"_update": {"a": 2}}',
-                          "Hex numbers not supported")
+                          u'{"a": 0x1}', u'{"a": 2}', u'{"_update": {"a": 2}}',
+                          u"Hex numbers not supported")
 
     def test_bad_JSON_no_octal(self):
         self.assertRaises(json_diff.BadJSONError, self._run_test_strings,
-                          u'{"a": 01}', '{"a": 2}', u'{"_update": {"a": 2}}',
-                          "Octal numbers not supported")
+                          u'{"a": 01}', u'{"a": 2}', u'{"_update": {"a": 2}}',
+                          u"Octal numbers not supported")
 
 
 class TestPiglitData(OurTestCase):
@@ -173,7 +176,7 @@ class TestPiglitData(OurTestCase):
         self._run_test(open("test/old-testing-data.json"),
                        open("test/new-testing-data.json"),
                        open("test/diff-result-only-testing-data.json"),
-                       "Large piglit reports diff (just resume field).",
+                       u"Large piglit reports diff (just resume field).",
                        OptionsClass(inc=["result"]))
 
 #    def test_piglit_results(self):
@@ -226,6 +229,7 @@ class TestMainArgsMgmt(unittest.TestCase):
 
         sys.stdout = sys.__stdout__
         locale.setlocale(locale.LC_ALL, cur_loc)
+        log.debug('res = %s (%s)', res, type(res))
         self.assertEqual(res, 1, "comparing different files" +
                          "\n\nexpected = %d\n\nobserved = %d" %
                          (1, res))

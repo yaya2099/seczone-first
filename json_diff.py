@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # coding: utf-8
+from __future__ import print_function
 """
 Script for comparing two objects
 
@@ -36,7 +37,7 @@ __author__ = "Matěj Cepl"
 __version__ = "1.4.3"
 
 logging.basicConfig(format='%(levelname)s:%(funcName)s:%(message)s',
-                    level=logging.INFO)
+                    level=logging.DEBUG)
 
 STYLE_MAP = {
     u"_append": u"append_class",
@@ -152,13 +153,13 @@ class Comparator(object):
         if fn1:
             try:
                 self.obj1 = json.load(fn1)
-            except (TypeError, OverflowError, ValueError), exc:
+            except (TypeError, OverflowError, ValueError) as exc:
                 raise BadJSONError("Cannot decode object from JSON.\n%s" %
                                    unicode(exc))
         if fn2:
             try:
                 self.obj2 = json.load(fn2)
-            except (TypeError, OverflowError, ValueError), exc:
+            except (TypeError, OverflowError, ValueError) as exc:
                 raise BadJSONError("Cannot decode object from JSON\n%s" %
                                    unicode(exc))
 
@@ -370,10 +371,10 @@ def main(argv=None):
     if options.HTMLoutput:
         # we want to hardcode UTF-8 here, because that's what's
         # in <meta> element of the generated HTML
-        print >>outf, unicode(HTMLFormatter(diff_res)).encode("utf-8")
+        print(unicode(HTMLFormatter(diff_res)).encode("utf-8"), file=outf)
     else:
         outs = json.dumps(diff_res, indent=4, ensure_ascii=False)
-        print >>outf, outs.encode("utf-8")
+        print(outs.encode("utf-8"), file=outf)
 
     if len(diff_res) > 0:
         return 1
