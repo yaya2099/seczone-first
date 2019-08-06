@@ -26,6 +26,7 @@ setup(
     url='https://gitlab.com/mcepl/json_diff',
     py_modules=['json_diff'],
     long_description=get_long_description(),
+    long_description_content_type='text/x-rst',
     keywords=['json', 'diff'],
     test_suite='test.test_json_diff',
     entry_points={
