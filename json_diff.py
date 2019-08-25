@@ -1,6 +1,4 @@
-#!/usr/bin/python
-# coding: utf-8
-from __future__ import print_function
+#!/usr/bin/python3
 """
 Script for comparing two objects
 
@@ -34,7 +32,7 @@ import logging
 from optparse import OptionParser
 
 __author__ = "Matěj Cepl"
-__version__ = "1.4.3"
+__version__ = "1.5.0"
 
 logging.basicConfig(format='%(levelname)s:%(funcName)s:%(message)s',
                     level=logging.DEBUG)

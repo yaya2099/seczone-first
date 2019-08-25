@@ -1,3 +1,6 @@
+1.5.0 2019-08-25
+ * Port to Python 3 (most tests pass, one skipped)
+
 1.4.3 2019-08-06
  * Fix tests to work.
 
