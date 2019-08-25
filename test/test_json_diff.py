@@ -51,7 +51,7 @@ class OurTestCase(unittest.TestCase):
     def _run_test_formatted(self, oldf, newf, difff, msg=u"", opts=None):
         diffator = json_diff.Comparator(oldf, newf, opts)
         diff = ("\n".join([line.strip()
-                for line in unicode(
+                for line in str(
                     json_diff.HTMLFormatter(diffator.compare_dicts())).
                 split("\n")])).strip()
         expected = ("\n".join([line.strip() for line in difff if line])).\
@@ -115,20 +115,21 @@ class TestBasicJSON(OurTestCase):
 
 class TestHappyPath(OurTestCase):
     def test_realFile(self):
-        self._run_test(open("test/old.json"), open("test/new.json"),
-                       open("test/diff.json"),
-                       "Simply nested objects (from file) diff.")
+        with open("test/old.json") as oldF, open("test/new.json") as newF, \
+                open("test/diff.json") as diffF:
+            self._run_test(oldF, newF, diffF,
+                           "Simply nested objects (from file) diff.")
 
     def test_nested(self):
         self._run_test_strings(NESTED_OLD, NESTED_NEW, NESTED_DIFF,
                                "Nested objects diff.")
 
     def test_nested_formatted(self):
-        self._run_test_formatted(open("test/old.json"), open("test/new.json"),
-                                 codecs.open("test/nested_html_output.html",
-                                             "r", "utf-8"),
-                                 "Simply nested objects (from file) " +
-                                 "diff formatted as HTML.")
+        with open("test/old.json") as oldF, open("test/new.json") as newF, \
+                open("test/nested_html_output.html", "r", encoding="utf-8") as outF:
+            self._run_test_formatted(oldF, newF, outF,
+                                     "Simply nested objects (from file) " +
+                                     "diff formatted as HTML.")
 
     def test_nested_excluded(self):
         self._run_test_strings(NESTED_OLD, NESTED_NEW, NESTED_DIFF_EXCL,
@@ -173,11 +174,12 @@ class TestBadPath(OurTestCase):
 
 class TestPiglitData(OurTestCase):
     def test_piglit_result_only(self):
-        self._run_test(open("test/old-testing-data.json"),
-                       open("test/new-testing-data.json"),
-                       open("test/diff-result-only-testing-data.json"),
-                       u"Large piglit reports diff (just resume field).",
-                       OptionsClass(inc=["result"]))
+        with open('test/old-testing-data.json') as oldF, \
+                open('test/new-testing-data.json') as newF, \
+                open('test/diff-result-only-testing-data.json') as diffF:
+            self._run_test(oldF, newF, diffF,
+                           u"Large piglit reports diff (just resume field).",
+                           OptionsClass(inc=["result"]))
 
 #    def test_piglit_results(self):
 #        self._run_test(open("test/old-testing-data.json"),
@@ -198,7 +200,7 @@ class TestMainArgsMgmt(unittest.TestCase):
             expected = "usage:"
             observed = save_stdout.read().lower()
 
-        self.assertEquals(observed[:len(expected)], expected,
+        self.assertEqual(observed[:len(expected)], expected,
                           "testing -h usage message" +
                           "\n\nexpected = %s\n\nobserved = %s" %
                           (expected, observed))
@@ -214,19 +216,18 @@ class TestMainArgsMgmt(unittest.TestCase):
 
         sys.stdout = sys.__stdout__
         locale.setlocale(locale.LC_ALL, cur_loc)
-        self.assertEquals(res, 0, "comparing same file" +
+        self.assertEqual(res, 0, "comparing same file" +
                           "\n\nexpected = %d\n\nobserved = %d" %
                           (0, res))
 
     def test_args_run_different(self):
-        save_stdout = StringIO()
-        sys.stdout = save_stdout
-        cur_loc = locale.getlocale()
-        locale.setlocale(locale.LC_ALL, "cs_CZ.utf8")
+        with StringIO() as save_stdout:
+            sys.stdout = save_stdout
+            cur_loc = locale.getlocale()
+            locale.setlocale(locale.LC_ALL, "cs_CZ.utf8")
 
-        res = json_diff.main(["./test_json_diff.py",
-                             "test/old.json", "test/new.json"])
-
+            res = json_diff.main(["./test_json_diff.py",
+                                 "test/old.json", "test/new.json"])
         sys.stdout = sys.__stdout__
         locale.setlocale(locale.LC_ALL, cur_loc)
         log.debug('res = %s (%s)', res, type(res))
@@ -243,8 +244,8 @@ class TestMainArgsMgmt(unittest.TestCase):
                         "-o", save_stdout.name,
                         "test/old.json", "test/new.json"])
 
-        expected_file = open("test/diff.json")
-        expected = expected_file.read()
+        with open("test/diff.json") as expected_file:
+            expected = expected_file.read()
 
         save_stdout.seek(0)
         observed = save_stdout.read()

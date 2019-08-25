@@ -37,7 +37,7 @@ __author__ = "Matěj Cepl"
 __version__ = "1.4.3"
 
 logging.basicConfig(format='%(levelname)s:%(funcName)s:%(message)s',
-                    level=logging.DEBUG)
+                    level=logging.INFO)
 
 STYLE_MAP = {
     u"_append": u"append_class",
@@ -104,7 +104,7 @@ class HTMLFormatter(object):
 
         if is_scalar(item):
             out_str = (u"<tr>\n  %s<td class='%s'>%s = %s</td>\n  </tr>\n" %
-                       (level_str, STYLE_MAP[typch], index, unicode(item)))
+                       (level_str, STYLE_MAP[typch], index, str(item)))
         elif isinstance(item, (list, tuple)):
             out_str = self._format_array(item, typch, level + 1)
         else:
@@ -134,7 +134,7 @@ class HTMLFormatter(object):
 
         return ("".join(out_str)).strip()
 
-    def __unicode__(self):
+    def __str__(self):
         return self._generate_page(self.diff)
 
 
@@ -155,13 +155,13 @@ class Comparator(object):
                 self.obj1 = json.load(fn1)
             except (TypeError, OverflowError, ValueError) as exc:
                 raise BadJSONError("Cannot decode object from JSON.\n%s" %
-                                   unicode(exc))
+                                   str(exc))
         if fn2:
             try:
                 self.obj2 = json.load(fn2)
             except (TypeError, OverflowError, ValueError) as exc:
                 raise BadJSONError("Cannot decode object from JSON\n%s" %
-                                   unicode(exc))
+                                   str(exc))
 
         self.excluded_attributes = []
         self.included_attributes = []
@@ -202,7 +202,7 @@ class Comparator(object):
                 if self.ignore_appended and (change_type == "_append"):
                     continue
                 logging.debug("result[change_type] = %s, key = %s",
-                              unicode(result[change_type]), key)
+                              str(result[change_type]), key)
                 logging.debug("self._is_incex_key = %s",
                               self._is_incex_key(key,
                                                  result[change_type][key]))
@@ -366,15 +366,18 @@ def main(argv=None):
     if len(args) != 2:
         parser.error("Script requires two positional arguments, " +
                      "names for old and new JSON file.")
-    diff = Comparator(open(args[0]), open(args[1]), options)
-    diff_res = diff.compare_dicts()
-    if options.HTMLoutput:
-        # we want to hardcode UTF-8 here, because that's what's
-        # in <meta> element of the generated HTML
-        print(unicode(HTMLFormatter(diff_res)).encode("utf-8"), file=outf)
-    else:
-        outs = json.dumps(diff_res, indent=4, ensure_ascii=False)
-        print(outs.encode("utf-8"), file=outf)
+
+    with open(args[0]) as old_file, open(args[1]) as new_file:
+        diff = Comparator(old_file, new_file, options)
+        diff_res = diff.compare_dicts()
+        if options.HTMLoutput:
+            # we want to hardcode UTF-8 here, because that's what's
+            # in <meta> element of the generated HTML
+            print(str(HTMLFormatter(diff_res)).encode("utf-8"), file=outf)
+        else:
+            outs = json.dumps(diff_res, indent=4, ensure_ascii=False)
+            print(outs.encode("utf-8"), file=outf)
+        outf.close()
 
     if len(diff_res) > 0:
         return 1
