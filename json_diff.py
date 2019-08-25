@@ -37,7 +37,7 @@ __author__ = "Matěj Cepl"
 __version__ = "1.4.3"
 
 logging.basicConfig(format='%(levelname)s:%(funcName)s:%(message)s',
-                    level=logging.INFO)
+                    level=logging.DEBUG)
 
 STYLE_MAP = {
     u"_append": u"append_class",
@@ -198,14 +198,14 @@ class Comparator(object):
         for change_type in result:
             temp_dict = {}
             for key in result[change_type]:
-                logging.debug("change_type = %s", change_type)
+                # logging.debug("change_type = %s", change_type)
                 if self.ignore_appended and (change_type == "_append"):
                     continue
-                logging.debug("result[change_type] = %s, key = %s",
-                              str(result[change_type]), key)
-                logging.debug("self._is_incex_key = %s",
-                              self._is_incex_key(key,
-                                                 result[change_type][key]))
+                # logging.debug("result[change_type] = %s, key = %s",
+                #               str(result[change_type]), key)
+                # logging.debug("self._is_incex_key = %s",
+                #               self._is_incex_key(key,
+                #                                  result[change_type][key]))
                 if not self._is_incex_key(key, result[change_type][key]):
                     temp_dict[key] = result[change_type][key]
             if len(temp_dict) > 0:
@@ -376,7 +376,7 @@ def main(argv=None):
             print(str(HTMLFormatter(diff_res)).encode("utf-8"), file=outf)
         else:
             outs = json.dumps(diff_res, indent=4, ensure_ascii=False)
-            print(outs.encode("utf-8"), file=outf)
+            print(outs, file=outf)
         outf.close()
 
     if len(diff_res) > 0:
