@@ -371,7 +371,7 @@ def main(argv=None):
         if options.HTMLoutput:
             # we want to hardcode UTF-8 here, because that's what's
             # in <meta> element of the generated HTML
-            print(str(HTMLFormatter(diff_res)).encode("utf-8"), file=outf)
+            outf.buffer.write(str(HTMLFormatter(diff_res)).encode("utf-8"))
         else:
             outs = json.dumps(diff_res, indent=4, ensure_ascii=False)
             print(outs, file=outf)
