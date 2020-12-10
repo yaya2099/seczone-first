@@ -1,0 +1,10 @@
+default:
+  image: python
+
+test:
+  stage: test
+  script:
+    - apt-get update -q -y
+    - apt-get install -y locales
+    - export LC_ALL="cs_CZ.UTF-8" LC_CTYPE="cs_CZ.UTF-8" && dpkg-reconfigure locales
+    - python3 -munittest -vv test
