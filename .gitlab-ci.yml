@@ -1,0 +1,7 @@
+default:
+  image: python
+
+test:
+  stage: test
+  script:
+    - python3 -munittest discover -v
